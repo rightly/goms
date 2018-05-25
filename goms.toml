@@ -1,0 +1,5 @@
+[server]
+address = "127.0.0.1:99999999"
+
+[log]
+output = "./test.log"
