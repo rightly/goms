@@ -1,5 +1,12 @@
 [server]
-address = "127.0.0.1:99999999"
+# collector 또는 manager 로 설정합니다.
+# collector : 모니터링 대상 서버에서 Metric 을 수집하여 manager 로 전달
+# manager   : web server 로 전달받은 Metric 을 가공하여 제공함
+role = "collector"
+
+# IP:Port e.g ) 127.0.0.1:8080
+# Port 는 1 - 65535 범위로 설정합니다. 66535보다 크게 설정시 66535 로 설정됩니다.
+address = "127.0.0.1:8001"
 
 [log]
 output = "./test.log"
