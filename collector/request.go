@@ -7,7 +7,7 @@ import (
 	"monitoring/internal"
 )
 
-type Request struct {
+type request struct {
 	RequestContext *fasthttp.RequestCtx
 	HTTPRequest    *fasthttp.Request
 	HTTPResponse   *fasthttp.Response
@@ -16,14 +16,13 @@ type Request struct {
 	Data           *core.System
 }
 
-func NewRequest(r *core.System, manager string) *Request {
+func newRequest(config *internal.Configuration, system *core.System) *request {
 	protocol := "http://"
-	endPoint := "/push-metric"
-	url := protocol + manager + endPoint
+	endPoint := "/metric"
+	url := protocol + config.Addr + endPoint
 	method := "PUT"
-	body, err := json.Marshal(r)
+	body, err := json.Marshal(system)
 	internal.CheckErr(err, "couldn't marshal core.System in Request.New")
-
 
 	fastRequest := fasthttp.AcquireRequest()
 	fastResponse := fasthttp.AcquireResponse()
@@ -35,23 +34,13 @@ func NewRequest(r *core.System, manager string) *Request {
 	fastRequest.Header.SetContentType("application/json")
 	fastRequest.Header.SetUserAgent("Goms")
 	fastRequest.Header.Set("Server", "Goms-collector/0.1")
+	fastRequest.Header.Set("X-Server", config.Name)
 
-	req := &Request{
+	req := &request{
 		HTTPRequest:fastRequest,
 		HTTPResponse:fastResponse,
 		Data: &core.System{},
 	}
 
 	return req
-}
-
-func (r *Request)do(m *Metric) error {
-	//dial := fasthttp.Dial()
-
-	err := m.Client.Do(r.HTTPRequest, r.HTTPResponse)
-	if internal.CheckErr(err, "couldn't send request in collector") {
-		return err
-	}
-
-	return nil
 }
