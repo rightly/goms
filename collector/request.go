@@ -29,12 +29,9 @@ func newRequest(config *internal.Configuration, system *core.System) *request {
 
 	fastRequest.SetRequestURI(url)
 	fastRequest.SetBody(body)
-
-	fastRequest.Header.SetMethod(method)
 	fastRequest.Header.SetContentType("application/json")
-	fastRequest.Header.SetUserAgent("Goms")
-	fastRequest.Header.Set("Server", "Goms-collector/0.1")
-	fastRequest.Header.Set("X-Server", config.Name)
+
+	setDefaultHeader(fastRequest, config.Name, method)
 
 	req := &request{
 		HTTPRequest:fastRequest,
@@ -43,4 +40,11 @@ func newRequest(config *internal.Configuration, system *core.System) *request {
 	}
 
 	return req
+}
+
+func setDefaultHeader(r *fasthttp.Request, xServer, method string )  {
+	r.Header.SetMethod(method)
+	r.Header.SetUserAgent("Goms")
+	r.Header.Set("Server", "Goms-collector/0.1")
+	r.Header.Set("X-Server", xServer)
 }
