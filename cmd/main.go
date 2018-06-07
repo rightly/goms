@@ -4,8 +4,8 @@ import (
 	"monitoring/internal"
 	"monitoring/core"
 	"monitoring/collector"
-	"sync"
 	"monitoring/manager"
+	"sync"
 )
 
 func main() {

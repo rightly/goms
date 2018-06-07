@@ -1,20 +1,13 @@
 package manager
 
 type Response struct {
-	Message string `json:"message"`
-	Code    int    `json:"code"`
+	Message   string `json:"message"`
+	RequestId string `json:"requestId"`
 }
 
-func ok(remote string) *Response {
+func setResponse(reqId, message string) *Response {
 	return &Response{
-		Code:200,
-		Message:remote + " receive success",
-	}
-}
-
-func fail(remote string) *Response {
-	return &Response{
-		Code:400,
-		Message:remote + " receive fail",
+		RequestId: reqId,
+		Message:   message,
 	}
 }

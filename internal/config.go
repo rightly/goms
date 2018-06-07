@@ -6,6 +6,7 @@ import (
 	"strings"
 	"strconv"
 	"os"
+	"github.com/fsnotify/fsnotify"
 )
 
 const (
@@ -44,7 +45,6 @@ func SetConfigFile() *Configuration {
 
 	v.SetConfigName(configName)
 	v.AddConfigPath(configPath)
-
 	//string to net.IP
 	//net.ParseIP(ip)
 
@@ -53,6 +53,17 @@ func SetConfigFile() *Configuration {
 	if CheckErr(c.ValidConfig(), "couldn't validation config") {
 		os.Exit(ConfigureError)
 	}
+
+
+	v.WatchConfig()
+	v.OnConfigChange(func(in fsnotify.Event) {
+		CheckErr(v.ReadInConfig(), "couldn't load config")
+		CheckErr(v.Unmarshal(&c), "couldn't unmarshal config")
+		if CheckErr(c.ValidConfig(), "couldn't validation config") {
+			os.Exit(ConfigureError)
+		}
+	})
+
 	return c
 }
 
@@ -81,7 +92,7 @@ func (c *Server)valid() error {
 		octet, _ := strconv.ParseInt(v, 10, 16)
 		if octet < 0 || octet > 255 {
 
-			err := errors.New("[server] address configuration value is not valid")
+			err := errors.New("[server] IP configuration value is not valid")
 			return err
 		}
 	}

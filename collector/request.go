@@ -18,7 +18,7 @@ type request struct {
 
 func newRequest(config *internal.Configuration, system *core.System) *request {
 	protocol := "http://"
-	endPoint := "/metric"
+	endPoint := "/metrics"
 	url := protocol + config.Addr + endPoint
 	method := "PUT"
 	body, err := json.Marshal(system)
